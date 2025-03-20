@@ -19,7 +19,7 @@ async function getExtractor() {
   return extractor;
 }
 
-const LIMIT = 100;
+const LIMIT = 10000;
 
 async function vectorizeNotesBatch(
   notes: Note[]
@@ -27,10 +27,13 @@ async function vectorizeNotesBatch(
   const extractor = await getExtractor();
   return Promise.all(
     notes.map(async (note, index) => {
-      if (index % 100 === 0) {
+      if (index % 1000 === 0) {
         console.log(`Vectorized ${index} notes`);
       }
       const result = await embed(note.body, extractor);
+      if (index === notes.length - 1) {
+        console.log(`Done vectorizing notes`);
+      }
       return {
         ...note,
         embedding: result.embedding,
@@ -58,7 +61,7 @@ export async function vectorizeNotes() {
     }
 
     const now = new Date();
-    // create vectorized_notes rows for each note, with status "pending"
+    
     const vectorizedNotes: VectorizedNote[] = notesToVectorize.map((note) => ({
       id: cuid(),
       note_id: note.id,

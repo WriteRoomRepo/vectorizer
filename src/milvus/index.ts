@@ -6,7 +6,7 @@ const milvus_url =
   // "https://in03-a209eecd1ffd90a.serverless.gcp-us-west1.cloud.zilliz.com"; // OREL: Change to your milvus url
   "https://in03-387f90c67a5a035.serverless.gcp-us-west1.cloud.zilliz.com";
 const milvus_insert = "v2/vectordb/entities/insert";
-const collectionName = "notes_copy";
+const collectionName = "notes_valid";
 
 export async function runFetch(notes: NoteWithEmbedding[]) {
   const url = `${milvus_url}/${milvus_insert}`;
@@ -57,6 +57,7 @@ export async function insertNotes(notes: NoteWithEmbedding[]) {
   const maxParallel = 5;
   const idsInserted: string[] = [];
   const idsFailed: string[] = [];
+  console.log(`About to insert ${notes.length} notes`);
   for (let i = 0; i < notes.length; i += batchSize * maxParallel) {
     const batchPromises = [];
     for (let j = 0; j < maxParallel; j++) {
@@ -70,6 +71,10 @@ export async function insertNotes(notes: NoteWithEmbedding[]) {
     for (const result of results) {
       idsInserted.push(...result.idsInserted);
       idsFailed.push(...result.idsFailed);
+    }
+    const totalLength = idsInserted.length + idsFailed.length;
+    if (totalLength % 1000 === 0) {
+      console.log(`Inserted ${totalLength} notes`);
     }
   }
   return {
