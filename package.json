@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && cp -r node_modules dist/node_modules && cp package.json dist/package.json && cd dist && zip -r dist.zip *",
-    "start": "node --expose-gc -r ts-node/register index.ts",
+    "start": "node dist/index.js",
     "dev": "node --loader ts-node/esm index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
