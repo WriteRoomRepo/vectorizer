@@ -27,10 +27,10 @@ async function vectorizeNotesBatch(
   const extractor = await getExtractor();
   return Promise.all(
     notes.map(async (note, index) => {
+      const result = await embed(note.body, extractor);
       if (index % 1000 === 0) {
         console.log(`Vectorized ${index} notes`);
       }
-      const result = await embed(note.body, extractor);
       if (index === notes.length - 1) {
         console.log(`Done vectorizing notes`);
       }
@@ -61,7 +61,7 @@ export async function vectorizeNotes() {
     }
 
     const now = new Date();
-    
+
     const vectorizedNotes: VectorizedNote[] = notesToVectorize.map((note) => ({
       id: cuid(),
       note_id: note.id,
