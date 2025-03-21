@@ -28,8 +28,9 @@ export interface MilvusNote {
   reaction_count: number;
   restack_count: number;
   comment_count: number;
+  comment_id: string;
+  author_id: string;
   date: number;
-  body: string;
 }
 
 export type NoteWithEmbedding = Note & { embedding: number[][] };

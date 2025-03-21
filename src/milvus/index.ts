@@ -3,10 +3,9 @@ import { MilvusNote, NoteWithEmbedding } from "../types/note";
 const key =
   "3c5a301c6328ee8485a733671e54b44c07aabf5dda23759cf6ca96524572da67c008a26dd17838beede6d4190fbc3aba16432818";
 const milvus_url =
-  // "https://in03-a209eecd1ffd90a.serverless.gcp-us-west1.cloud.zilliz.com"; // OREL: Change to your milvus url
   "https://in03-387f90c67a5a035.serverless.gcp-us-west1.cloud.zilliz.com";
 const milvus_insert = "v2/vectordb/entities/insert";
-const collectionName = "notes_valid";
+const collectionName = "notes_new";
 
 export async function runFetch(notes: NoteWithEmbedding[]) {
   const url = `${milvus_url}/${milvus_insert}`;
@@ -23,7 +22,8 @@ export async function runFetch(notes: NoteWithEmbedding[]) {
     reaction_count: note.reaction_count,
     comment_count: note.children_count,
     restack_count: note.restacks,
-    body: note.body,
+    comment_id: note.comment_id,
+    author_id: note.user_id,
   }));
 
   const batchBody = JSON.stringify({

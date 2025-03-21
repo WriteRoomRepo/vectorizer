@@ -53,10 +53,12 @@ export async function vectorizeNotes() {
       )
       .whereNull("vectorized_notes.note_id")
       .andWhere("notes_comments.note_is_restacked", "=", "false")
+      .andWhere("notes_comments.reaction_count", ">", 0)
       .select("notes_comments.*")
       .limit(LIMIT);
 
     if (notesToVectorize.length === 0) {
+      console.log("Done vectorizing notes");
       break;
     }
 
