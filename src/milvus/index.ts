@@ -19,9 +19,9 @@ export async function runFetch(notes: NoteWithEmbedding[]) {
     id: note.id,
     vector: note.embedding,
     date: note.date ? new Date(note.date).getTime() : 0,
-    reaction_count: note.reaction_count,
-    comment_count: note.children_count,
-    restack_count: note.restacks,
+    reaction_count: note.reaction_count || 0,
+    comment_count: note.children_count || 0,
+    restack_count: note.restacks || 0,
     comment_id: note.comment_id,
     author_id: note.user_id,
   }));
@@ -74,7 +74,7 @@ export async function insertNotes(notes: NoteWithEmbedding[]) {
     }
     const totalLength = idsInserted.length + idsFailed.length;
     if (totalLength % 1000 === 0) {
-      console.log(`Inserted ${totalLength} notes`);
+      console.log(`Inserted a batch of ${totalLength} notes `);
     }
   }
   return {

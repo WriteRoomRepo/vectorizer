@@ -54,6 +54,8 @@ export async function vectorizeNotes() {
       .whereNull("vectorized_notes.note_id")
       .andWhere("notes_comments.note_is_restacked", "=", "false")
       .andWhere("notes_comments.reaction_count", ">", 0)
+      .andWhere("notes_comments.body", "!=", "")
+      .andWhere("notes_comments.children_count", ">=", 0)
       .select("notes_comments.*")
       .limit(LIMIT);
 
@@ -72,11 +74,11 @@ export async function vectorizeNotes() {
       updated_at: now,
     }));
 
-    console.log(`Inserting ${vectorizedNotes.length} vectorized notes`);
+    console.log(`Inserting ${vectorizedNotes.length} vectorized_notes records`);
 
     await db("vectorized_notes").insert(vectorizedNotes);
 
-    console.log(`Inserted ${vectorizedNotes.length} vectorized notes`);
+    console.log(`Inserted ${vectorizedNotes.length} vectorized_notes records`);
 
     const notesWithEmbedding = await vectorizeNotesBatch(notesToVectorize);
 
@@ -84,7 +86,7 @@ export async function vectorizeNotes() {
 
     const { idsInserted, idsFailed } = await insertNotes(notesWithEmbedding);
 
-    console.log(`Inserted ${idsInserted.length} notes`);
+    console.log(`Inserted a total of: ${idsInserted.length} notes to Milvus`);
 
     const successVectorizedNotes = vectorizedNotes.filter((vectorized_note) =>
       idsInserted.includes(vectorized_note.note_id)
